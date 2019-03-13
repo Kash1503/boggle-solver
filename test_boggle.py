@@ -69,4 +69,36 @@ class TestBoggle(unittest.TestCase):
             others.remove(pos)
             self.assertListEqual(sorted(neighbours[pos]), sorted(others))
             
+    def test_converting_a_path_to_a_word(self):
+        """
+        ensure that paths can be converted to words
+        """
+        grid = boggle.make_grid(2, 2)
+        oneLetterWord = boggle.path_to_word(grid, [(0, 0)])
+        twoLetterWord = boggle.path_to_word(grid, [(0, 0), (1, 1)])
+        self.assertEqual(oneLetterWord, grid[(0, 0)])
+        self.assertEqual(twoLetterWord, grid[(0, 0)] + grid[(1, 1)])
         
+    def test_search_grid_for_words(self):
+        """
+        ensure that certain patterns can be found in a path
+        """
+        grid = {(0, 0): "A", (0, 1): "B", (1, 0): "C", (1, 1): "D"}
+        twoLetterWord = "AB"
+        threeLetterWord = "ABC"
+        notTheWord = "EEE"
+        dictionary = [twoLetterWord, threeLetterWord, notTheWord]
+        
+        foundWords = boggle.search(grid, dictionary)
+        
+        self.assertTrue(twoLetterWord in foundWords)
+        self.assertTrue(threeLetterWord in foundWords)
+        self.assertTrue(notTheWord not in foundWords)
+        
+    def test_load_dictionary(self):
+        """
+        test that the 'get_dictionary' function returns a dictionary that has a 
+        length greater than zero
+        """
+        dictionary = boggle.get_dictionary("words.txt")
+        self.assertGreater(len(dictionary), 0)
